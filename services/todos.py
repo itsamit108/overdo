@@ -3,14 +3,7 @@ from sqlmodel import Session, select
 from database import get_session
 from models import Todo, User
 from schemas import TodoCreate, UserRead
-
-
-def check_user_authorization(user_id: int, current_user: UserRead):
-    if current_user.user_id != user_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not authorized to access this user",
-        )
+from utils.check_user_auth import check_user_authorization
 
 
 def create_todo(

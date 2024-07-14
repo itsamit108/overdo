@@ -9,7 +9,7 @@ from database import get_session
 from models import User
 from schemas import UserCreate
 from utils.hash import Hash
-from utils.jwt_token import ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
+from utils.jwt import ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
 
 
 def login_for_access_token(
@@ -42,7 +42,7 @@ def register_for_access_token(req: UserCreate, session: Session = Depends(get_se
         )
 
     user = User.model_validate(req, strict=True)
-    user.password = Hash.hash_password(user.password)  # Hash the password
+    user.password = Hash.get_password_hash(user.password)  # Hash the password
     session.add(user)
     session.commit()
     session.refresh(user)

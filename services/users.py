@@ -3,15 +3,8 @@ from sqlmodel import Session, select
 from database import get_session
 from models import User
 from schemas import UserCreate, UserRead
+from services.todos import check_user_authorization
 from utils.hash import Hash
-
-
-def check_user_authorization(user_id: int, current_user: UserRead):
-    if current_user.user_id != user_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not authorized to access this user",
-        )
 
 
 def get_user(
@@ -52,7 +45,7 @@ def update_user(
     # Update the user's attributes
     for key, value in req.model_dump().items():
         if key == "password":
-            value = Hash.hash_password(value)  # Hash the password before updating
+            value = Hash.get_password_hash(value)  # Hash the password before updating
         setattr(user, key, value)
     session.add(user)
     session.commit()
